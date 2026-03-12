@@ -26,16 +26,24 @@ region:"GLOBAL"
 }
 )
 
-const data = await response.json()
+const text = await response.text()
+
+let data
+try{
+data = JSON.parse(text)
+}catch{
+return res.json({
+status:false,
+message:"Blocked Cloudflare"
+})
+}
 
 if(data?.data?.account){
-
 return res.json({
 status:true,
 nickname:data.data.account.nickname,
 region:data.data.account.region
 })
-
 }
 
 return res.json({
@@ -43,13 +51,11 @@ status:false,
 message:"ID tidak ditemukan"
 })
 
-}catch(e){
-
+}catch(err){
 return res.json({
 status:false,
-error:e.message
+error:err.message
 })
-
 }
 
 }
