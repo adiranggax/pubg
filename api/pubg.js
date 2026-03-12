@@ -1,4 +1,4 @@
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
 
 try{
 
@@ -35,7 +35,6 @@ region:"GLOBAL"
 
 const data = await response.json()
 
-// cek apakah response valid
 if(data && data.data && data.data.account){
 
 return res.status(200).json({
@@ -46,7 +45,7 @@ region:data.data.account.region
 
 }
 
-return res.status(200).json({
+return res.json({
 status:false,
 message:"ID tidak ditemukan"
 })
@@ -57,43 +56,6 @@ return res.status(500).json({
 status:false,
 message:"Server error",
 error:err.message
-})
-
-}
-
-}
-if(!data.error){
-return res.json({
-status:true,
-nickname:data.data.account.nickname,
-region:data.data.account.region
-})
-}
-
-return res.json({
-status:false,
-message:"ID tidak ditemukan"
-})
-
-}catch(e){
-
-return res.json({
-status:false,
-message:"Error server"
-})
-
-}
-
-}status:true,
-nickname:data.data.account.nickname,
-region:data.data.account.region
-})
-
-}catch(e){
-
-return res.status(500).json({
-status:false,
-message:"ID tidak ditemukan"
 })
 
 }
