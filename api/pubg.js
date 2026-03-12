@@ -11,7 +11,7 @@ message:"Masukkan ID"
 
 try{
 
-const response = await fetch(
+const r = await fetch(
 "https://bj-api.ourastore.com/v3/inquiry/account/pre-validate",
 {
 method:"POST",
@@ -24,17 +24,40 @@ headers:{
 "Referer":"https://www.ourastore.com/"
 },
 body:JSON.stringify({
-productCode:"PUBGM",
+product:{code:"PUBGM"},
+account:{
 userId:id,
 region:"GLOBAL"
+}
 })
 }
 )
 
-const data = await response.json()
+const data = await r.json()
 
-return res.status(200).json({
+if(!data.error){
+return res.json({
 status:true,
+nickname:data.data.account.nickname,
+region:data.data.account.region
+})
+}
+
+return res.json({
+status:false,
+message:"ID tidak ditemukan"
+})
+
+}catch(e){
+
+return res.json({
+status:false,
+message:"Error server"
+})
+
+}
+
+}status:true,
 nickname:data.data.account.nickname,
 region:data.data.account.region
 })
