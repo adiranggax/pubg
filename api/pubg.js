@@ -5,7 +5,7 @@ const { id } = req.query
 if(!id){
  return res.json({
   status:false,
-  message:"Masukkan ID"
+  message:"Masukkan ID PUBG"
  })
 }
 
@@ -27,18 +27,19 @@ const data = await r.json()
 if(data.message === "Success"){
  return res.json({
   status:true,
+  id:id,
   nickname:data.data
  })
 }
 
-res.json({
+return res.json({
  status:false,
- message:"ID tidak ditemukan"
+ message:"Player tidak ditemukan"
 })
 
 }catch(e){
 
-res.json({
+return res.json({
  status:false,
  error:e.message
 })
