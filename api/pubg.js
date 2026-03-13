@@ -1,33 +1,43 @@
-module.exports = async function handler(req,res){
+export default async function handler(req, res) {
 
-const id = req.query.id
+const { id } = req.query
 
-const response = await fetch(
-"https://api.bangjeff.com/v3/inquiry/account/pre-validate",
-{
-method:"POST",
-headers:{
-"content-type":"application/json",
-"x-device-id":"c4707c0c7dbc84cc0a51d91378fba18d",
-"x-language":"id",
-"xToken":"SnEnrLrxbXYWlFkKuNid/vJq0G8flgCdNC7KI87I4J58...",
-"xTokenVersion":"v1.0.0",
-"origin":"https://www.bangjeff.com",
-"referer":"https://www.bangjeff.com/",
-"user-agent":"Mozilla/5.0"
-},
-body:JSON.stringify({
-product:{code:"PUBGM"},
-account:{
-userId:id,
-region:"GLOBAL"
+if(!id){
+ return res.status(400).json({
+  status:false,
+  message:"Masukkan ID"
+ })
 }
+
+try{
+
+const encoded = Buffer.from(`userid:${id}`).toString("base64")
+
+const url =
+`https://api.tokogame.com/core/v1/orders/validate-order?productId=63338bc5d16e41172ceb0466&encryptedAnswers=${encoded}`
+
+const response = await fetch(url,{
+ headers:{
+  "x-region":"ID",
+  "x-language":"ID",
+  "x-currency":"IDR"
+ }
 })
-}
-)
 
 const data = await response.json()
 
-res.json(data)
+res.json({
+ status:true,
+ nickname:data?.data?.username || null
+})
+
+}catch(e){
+
+res.status(500).json({
+ status:false,
+ error:e.message
+})
+
+}
 
 }
