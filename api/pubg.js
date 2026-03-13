@@ -1,47 +1,33 @@
 export default async function handler(req, res) {
 
-const { id } = req.query
+res.setHeader("Access-Control-Allow-Origin", "*")
+res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS")
+res.setHeader("Access-Control-Allow-Headers", "Content-Type")
 
-if(!id){
- return res.json({
-  status:false,
-  message:"Masukkan ID PUBG"
- })
+if (req.method === "OPTIONS") {
+return res.status(200).end()
 }
 
-try{
+try {
 
-const url =
+let id = req.query.id
+
+let response = await fetch(
 `https://gopay.co.id/games/v1/order/prepare/PUBGM?userId=${id}&zoneId=`
+)
 
-const r = await fetch(url,{
- headers:{
-  "accept":"application/json",
-  "x-client":"web-desktop",
-  "user-agent":"Mozilla/5.0"
- }
-})
-
-const data = await r.json()
-
-if(data.message === "Success"){
- return res.json({
-  status:true,
-  id:id,
-  nickname:data.data
- })
-}
+let data = await response.json()
 
 return res.json({
- status:false,
- message:"Player tidak ditemukan"
+status: true,
+nickname: data.data
 })
 
-}catch(e){
+} catch (err) {
 
 return res.json({
- status:false,
- error:e.message
+status:false,
+message:"ID tidak ditemukan"
 })
 
 }
